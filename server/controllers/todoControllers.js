@@ -1,33 +1,37 @@
 import uuid from 'uuid/v4';
 import Schema from '../helpers/validation';
-import todos from './todoData';
-import users from '../controllers/userData';
+import pool from '../db/connection';
 
 const todoControllers = {};
 
 const createTask = async (req, res) => {
-    // const user = req.userExists;
     try {
-        const user = req.userExists;
-        const result = Schema.validateTodo(req.body);
+        const { userid } = req.userExists;
+        const task = req.body;
+        const result = Schema.validateTodo(task);
         if (result.error) {
             return res.status(400).json({
                 status: 400,
                 message: result.error.details[0].message,
             });
         }
-        const task = {
-            userId: user.userId,
-            taskId: uuid(),
-            createdOn: new Date(),
-            title: req.body.title,
-            description: req.body.description
-        };
-        todos.push(task);
+        const taskid = uuid();
+        const createdon = new Date();
+        const insertTask = 'INSERT INTO todos (userid, taskid, createdon, title, description) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+        const values = [
+            userid,
+            taskid,
+            createdon,
+            task.title,
+            task.description,
+        ];
+
+        const newTask = await pool.query(insertTask, values);
+
         return res.status(200).json({
             status: 200,
             message: 'Task added successfully',
-            data: task,
+            data: newTask.rows[0],
         });
     } catch (err) {
         return res.status(500).json({
@@ -37,11 +41,12 @@ const createTask = async (req, res) => {
     }
 };
 const getAllTodos = async (req, res) => {
-    // const user = req.userExists;
-    // const allTodos = todos.filter((c) => c.userId === user.userId);
+
     try {
-        const user = req.userExists;
-        const allTodos = todos.filter((c) => c.userId === user.userId);
+        const { userid } = req.userExists;
+
+        const selectTodos = 'SELECT * FROM todos WHERE userid = $1';
+        const allTodos = await pool.query(selectTodos, [userid]);
 
         const pageNo = req.query.pageNo ? parseInt(req.query.pageNo) : 1;
 
@@ -49,13 +54,13 @@ const getAllTodos = async (req, res) => {
         const startIndex = (pageNo - 1) * pageSize;
         const endIndex = pageSize * pageNo;
 
-        const totalTodos = allTodos.length;
+        const totalTodos = allTodos.rows.length;
         const totalPages = Math.ceil(totalTodos / pageSize);
-        let retrievedTodos = allTodos.slice(startIndex, endIndex);
+        let retrievedTodos = allTodos.rows.slice(startIndex, endIndex);
 
         const itemsOnPage = retrievedTodos.length;
 
-        if (allTodos.length === 0) {
+        if (allTodos.rows.length === 0) {
             return res.status(404).json({
                 status: 404,
                 message: 'You have no todos',
@@ -64,7 +69,6 @@ const getAllTodos = async (req, res) => {
             return res.status(200).json({
                 status: 200,
                 message: 'Todos retrieved successfully',
-                // data: allTodos,
                 totalTodos,
                 totalPages,
                 itemsOnPage,
@@ -82,22 +86,26 @@ const getAllTodos = async (req, res) => {
 };
 
 const getOneTodo = async (req, res) => {
-    // const user = req.userExists;
     try {
-        const user = req.userExists;
+        const { userid } = req.userExists;
+        let { taskid } = req.params;
 
-        const allTodos = todos.filter((c) => c.userId === user.userId);
-        const getTask = allTodos.find((c) => c.taskId === req.params.taskId);
-        if (!getTask) {
+        const getTodo = 'SELECT * FROM todos WHERE userid=$1 AND taskid=$2';
+        const values = [
+            userid,
+            taskid
+        ];
+        const getTask = await pool.query(getTodo, values);
+        if (!getTask.rows[0]) {
             return res.status(404).json({
                 status: 404,
-                message: 'Task with that id was not found',
+                message: 'Task not found',
             });
         }
         return res.status(200).json({
             status: 200,
             message: 'Task retrieved successfully',
-            data: getTask,
+            data: getTask.rows[0],
         });
     } catch (err) {
         return res.status(500).json({
@@ -108,16 +116,22 @@ const getOneTodo = async (req, res) => {
 };
 
 const updateTask = async (req, res) => {
-    // const user = req.userExists;
     try {
-        const user = req.userExists;
+        const { userid } = req.userExists;
+        const { taskid } = req.params;
 
-        const allTodos = todos.filter((c) => c.userId === user.userId);
-        const getTask = allTodos.find((c) => c.taskId === req.params.taskId);
-        if (!getTask) {
+        const getTaskQuery = 'SELECT * FROM todos WHERE userid=$1 AND taskid=$2';
+
+        const selectValues = [
+            userid,
+            taskid
+        ];
+        const getTask = await pool.query(getTaskQuery, selectValues);
+
+        if (!getTask.rows[0]) {
             return res.status(404).json({
                 status: 404,
-                message: 'Task with that id was not found',
+                message: 'Task to be updated was not found',
             });
         }
         const result = await Schema.validateTodo(req.body);
@@ -127,12 +141,21 @@ const updateTask = async (req, res) => {
                 message: result.error.details[0].message,
             })
         }
-        getTask.title = req.body.title || getTask.title;
-        getTask.description = req.body.description || getTask.description;
+        const updateQuery = `UPDATE todos
+                SET title=$1,description=$2 WHERE userid=$3 AND taskid=$4 RETURNING *`;
+
+        const values = [
+            req.body.title || getTask.rows[0].title,
+            req.body.description || getTask.rows[0].description,
+            getTask.rows[0].userid,
+            getTask.rows[0].taskid
+        ];
+        const updatedTask = await pool.query(updateQuery, values);
+
         return res.status(200).json({
             status: 200,
             message: 'Task updated successfully',
-            data: getTask,
+            data: updatedTask.rows[0],
         })
     } catch (err) {
         return res.status(500).json({
@@ -142,26 +165,33 @@ const updateTask = async (req, res) => {
     }
 };
 const deleteTask = async (req, res) => {
-    // const user = req.userExists;
     try {
-        const user = req.userExists;
+        const { userid } = req.userExists;
+        const { taskid } = req.params;
 
-        const allTodos = todos.filter((c) => c.userId === user.userId);
-        const oneTask = allTodos.find((c) => c.taskId === req.params.taskId);
-        if (!oneTask) {
+        const getTaskQuery = 'SELECT * FROM todos WHERE userid=$1 AND taskid=$2';
+        const selectValues = [
+            userid,
+            taskid
+        ]
+        const getTask = await pool.query(getTaskQuery, selectValues);
+        if (!getTask.rows[0]) {
             return res.status(404).json({
                 status: 404,
-                message: 'Task with that id was not found',
+                message: 'Task to be deleted was not found',
             });
         }
-        const index = todos.indexOf(oneTask);
-
-        todos.splice(index, 1);
+        const deleteQuery = 'DELETE FROM todos WHERE userid=$1 AND taskid=$2';
+        const deleteValues = [
+            userid,
+            taskid
+        ]
+        const deletedTask = await pool.query(deleteQuery, deleteValues);
 
         return res.status(200).json({
             status: 200,
             message: 'Task deleted successfully',
-            data: oneTask,
+            data: deletedTask.rows[0],
         });
     } catch (err) {
         return res.status(500).json({

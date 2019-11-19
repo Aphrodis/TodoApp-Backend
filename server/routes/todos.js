@@ -8,10 +8,10 @@ todosRouter.post('/api/v1/todos', accessToken, todoControllers.createTask);
 
 todosRouter.get('/api/v1/todos', accessToken, todoControllers.getAllTodos);
 
-todosRouter.get('/api/v1/todos/:taskId', accessToken, todoControllers.getOneTodo);
+todosRouter.get('/api/v1/todos/:taskid', accessToken, todoControllers.getOneTodo);
 
-todosRouter.patch('/api/v1/todos/:taskId', accessToken, todoControllers.updateTask);
+todosRouter.patch('/api/v1/todos/:taskid', accessToken, todoControllers.updateTask);
 
-todosRouter.delete('/api/v1/todos/:taskId', accessToken, todoControllers.deleteTask);
+todosRouter.delete('/api/v1/todos/:taskid', accessToken, todoControllers.deleteTask);
 
 export default todosRouter;

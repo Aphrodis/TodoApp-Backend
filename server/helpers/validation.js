@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 const validateTodo = (task) => {
     const todoSchema = Joi.object({
-        taskId: Joi
+        taskid: Joi
             .string(),
         createdOn: Joi
             .string(),
