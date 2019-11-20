@@ -42,7 +42,6 @@ const server500Error = {
     email: 'izabayoaphrodis@gmail.com'
 };
 
-
 usersInfo.validUserSignup = validUserSignup;
 usersInfo.invalidUserSignup = invalidUserSignup;
 usersInfo.emailExists = emailExists;
