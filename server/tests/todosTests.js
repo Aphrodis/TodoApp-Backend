@@ -5,8 +5,8 @@ import todosData from './dummyData.js/todosData';
 const { expect } = chai;
 chai.use(chaiHttp);
 
-let token = 'token';
-console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', token);
+let token;
+
 let result;
 
 before('Create a user', (done) => {
@@ -17,6 +17,7 @@ before('Create a user', (done) => {
         .end((err, res) => {
             if (err) done(err);
             token = res.body.data.token;
+            console.log('gggggggggggggggggggggggggggggggggg', token);
             done();
         });
 });
