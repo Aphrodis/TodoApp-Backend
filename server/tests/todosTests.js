@@ -6,7 +6,8 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 
-let token;
+let token = '';
+console.log('dddddddddddddddddddddddddddddd', token);
 let result;
 
 before('Create a user', (done) => {
