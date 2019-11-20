@@ -6,9 +6,7 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 let token;
-
 let result;
-
 before('Create a user', (done) => {
     chai
         .request(app)
@@ -17,7 +15,6 @@ before('Create a user', (done) => {
         .end((err, res) => {
             if (err) done(err);
             token = res.body.data.token;
-            console.log('gggggggggggggggggggggggggggggggggg', token);
             done();
         });
 });
