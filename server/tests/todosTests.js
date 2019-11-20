@@ -2,9 +2,8 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
 import todosData from './dummyData.js/todosData';
-chai.use(chaiHttp);
-
 const { expect } = chai;
+chai.use(chaiHttp);
 
 let token = '';
 console.log('dddddddddddddddddddddddddddddd', token);
