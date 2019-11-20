@@ -4,6 +4,8 @@ node_js:
 branches:
   only:
     - develop
+services:
+  - postgresql
 cache:
   directories:
     - node_modules
