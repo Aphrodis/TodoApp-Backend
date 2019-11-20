@@ -47,7 +47,6 @@ usersInfo.validUserSignup = validUserSignup;
 usersInfo.invalidUserSignup = invalidUserSignup;
 usersInfo.emailExists = emailExists;
 usersInfo.noPassword500 = noPassword500;
-
 usersInfo.emailNotFound = emailNotFound;
 usersInfo.incorrectPassword = incorrectPassword;
 usersInfo.server500Error = server500Error;

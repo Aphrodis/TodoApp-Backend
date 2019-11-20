@@ -10,7 +10,7 @@ const validUserSignup1 = {
 const validUserSignin1 = {
     email: 'izabayoaphrodice@gmail.com',
     password: 'password1'
-}
+};
 const validTodo = {
     title: 'Code',
     description: 'Today, I will be writing tests'
@@ -34,10 +34,10 @@ const taskNotFound = {
 };
 const invalidUpdate = {
     description: 'Go to play football'
-}
+};
 const invalidUpdate2 = {
     title: 'Pray'
-}
+};
 const updateTodo = {
     title: 'Updated title',
     description: 'Updated description'
