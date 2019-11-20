@@ -187,11 +187,9 @@ const deleteTask = async (req, res) => {
             taskid
         ]
         const deletedTask = await pool.query(deleteQuery, deleteValues);
-
         return res.status(200).json({
             status: 200,
             message: 'Task deleted successfully',
-            data: deletedTask.rows[0],
         });
     } catch (err) {
         return res.status(500).json({

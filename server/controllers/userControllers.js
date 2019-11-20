@@ -14,6 +14,7 @@ const createUser = async (req, res) => {
 
         if (user.rows[0]) {
             return res.status(409).json({
+                status: 409,
                 message: 'Email already exists',
             });
         } else {
@@ -21,6 +22,7 @@ const createUser = async (req, res) => {
             const validateUser = Schema.validateSignup(req.body);
             if (validateUser.error) {
                 return res.status(400).json({
+                    status: 400,
                     message: validateUser.error.details[0].message,
                 });
             }
@@ -45,10 +47,11 @@ const createUser = async (req, res) => {
                 data: {
                     token,
                 }
-            })
+            });
         }
     } catch (err) {
         return res.status(500).json({
+            status: 500,
             message: err.message,
         });
     }
@@ -61,18 +64,21 @@ const signin = async (req, res) => {
         const user = await pool.query(checkEmail, [user1.email]);
         if (!user.rows[0]) {
             return res.status(404).json({
+                status: 404,
                 message: 'Email not found',
             });
         }
         const validPassword = await bcrypt.compare(user1.password, user.rows[0].password);
         if (!validPassword) {
             return res.status(401).json({
+                status: 401,
                 message: 'Incorrect password',
             });
         }
         const signinValidation = Schema.validateSignin(user1);
         if (signinValidation.error) {
             return res.status(400).json({
+                status: 400,
                 message: signinValidation.error.details[0].message,
             });
         }
@@ -88,6 +94,7 @@ const signin = async (req, res) => {
         });
     } catch (err) {
         return res.status(500).json({
+            status: 500,
             message: err.message,
         });
     }
