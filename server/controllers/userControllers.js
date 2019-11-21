@@ -45,13 +45,6 @@ const signin = async (req, res) => {
         if (!validPassword) {
             return res.status(401).json({ status: 401, message: 'Incorrect password', });
         }
-        // const signinValidation1 = Schema.validateSignin(user1);
-        // if (signinValidation1.error) {
-        //     return res.status(400).json({
-        //         status: 400,
-        //         message: signinValidation1.error.details[0].message,
-        //     });
-        // }
         const signinInfo = { userid: findUser.rows[0].userid, email: findUser.rows[0].email, }
         const token = userToken(signinInfo);
         return res.status(200).json({ status: 200, message: 'User signed in successfully', token, });
