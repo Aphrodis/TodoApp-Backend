@@ -10,18 +10,20 @@ const createUser = async (req, res) => {
     try {
         const user1 = req.body;
         const checkEmail = 'SELECT * FROM users WHERE email=$1';
-        const user = await pool.query(checkEmail, [user1.email]);
+        const checkUser = await pool.query(checkEmail, [user1.email]);
 
-        if (user.rows[0]) {
+        if (checkUser.rows[0]) {
             return res.status(409).json({
+                status: 409,
                 message: 'Email already exists',
             });
         } else {
             const passwordHash = await bcrypt.hash(req.body.password, 12);
-            const validateUser = Schema.validateSignup(req.body);
-            if (validateUser.error) {
+            const validateUser1 = Schema.validateSignup(req.body);
+            if (validateUser1.error) {
                 return res.status(400).json({
-                    message: validateUser.error.details[0].message,
+                    status: 400,
+                    message: validateUser1.error.details[0].message,
                 });
             }
             const userid = uuid();
@@ -45,10 +47,11 @@ const createUser = async (req, res) => {
                 data: {
                     token,
                 }
-            })
+            });
         }
     } catch (err) {
         return res.status(500).json({
+            status: 500,
             message: err.message,
         });
     }
@@ -58,27 +61,30 @@ const signin = async (req, res) => {
     try {
         const user1 = req.body;
         const checkEmail = 'SELECT * FROM users WHERE email=$1';
-        const user = await pool.query(checkEmail, [user1.email]);
-        if (!user.rows[0]) {
+        const findUser = await pool.query(checkEmail, [user1.email]);
+        if (!findUser.rows[0]) {
             return res.status(404).json({
+                status: 404,
                 message: 'Email not found',
             });
         }
-        const validPassword = await bcrypt.compare(user1.password, user.rows[0].password);
+        const validPassword = await bcrypt.compare(user1.password, findUser.rows[0].password);
         if (!validPassword) {
             return res.status(401).json({
+                status: 401,
                 message: 'Incorrect password',
             });
         }
-        const signinValidation = Schema.validateSignin(user1);
-        if (signinValidation.error) {
-            return res.status(400).json({
-                message: signinValidation.error.details[0].message,
-            });
-        }
+        // const signinValidation1 = Schema.validateSignin(user1);
+        // if (signinValidation1.error) {
+        //     return res.status(400).json({
+        //         status: 400,
+        //         message: signinValidation1.error.details[0].message,
+        //     });
+        // }
         const signinInfo = {
-            userid: user.rows[0].userid,
-            email: user.rows[0].email,
+            userid: findUser.rows[0].userid,
+            email: findUser.rows[0].email,
         }
         const token = userToken(signinInfo);
         return res.status(200).json({
@@ -88,6 +94,7 @@ const signin = async (req, res) => {
         });
     } catch (err) {
         return res.status(500).json({
+            status: 500,
             message: err.message,
         });
     }

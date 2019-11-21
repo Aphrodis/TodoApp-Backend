@@ -1,0 +1,3 @@
+[![Build Status](https://travis-ci.com/Aphrodis/TodoApp-Backend.svg?branch=develop)](https://travis-ci.com/Aphrodis/TodoApp-Backend) [![Coverage Status](https://coveralls.io/repos/github/Aphrodis/TodoApp-Backend/badge.svg?branch=develop)](https://coveralls.io/github/Aphrodis/TodoApp-Backend?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/09c57d7fd32fce9f4c2b/maintainability)](https://codeclimate.com/github/Aphrodis/TodoApp-Backend/maintainability) [![Known Vulnerabilities](https://snyk.io/test/github/Aphrodis/TodoApp-Backend/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Aphrodis/TodoApp-Backend?targetFile=package.json)
+
+[Postman API documentation](https://documenter.getpostman.com/view/5793868/SW7aYo2Q?version=latest)

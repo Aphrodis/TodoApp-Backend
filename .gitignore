@@ -2,4 +2,8 @@ node_modules/
 dist/
 .env
 .nyc_output/
+<<<<<<< HEAD
 .vscode
+=======
+.vscode
+>>>>>>> 02cc91c58f6d5f92fd70a2003b8834f806315f1a

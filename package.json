@@ -4,11 +4,12 @@
   "description": "This is a todo application",
   "main": "app.js",
   "scripts": {
-    "build": "babel server -d dist",
     "create": "babel-node ./server/db/tables.js --exit",
+    "build": "babel server -d dist",
     "start": "nodemon --exec babel-node ./server/app.js",
     "devstart": "babel-node ./server/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run create && nyc mocha --require @babel/register ./server/tests --exit",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "author": "",
   "license": "ISC",
@@ -16,20 +17,30 @@
     "@babel/core": "^7.7.2",
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.7.1",
+    "@babel/register": "^7.7.0",
     "@babel/runtime": "^7.7.2",
     "babel-node": "0.0.1-security",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "coveralls": "^3.0.7",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1",
     "pg": "^7.12.1",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "@babel/cli": "^7.7.0",
     "@babel/node": "^7.7.0",
+=======
+    "babel-loader": "^8.0.6",
+>>>>>>> 02cc91c58f6d5f92fd70a2003b8834f806315f1a
     "nodemon": "^1.19.4"
   },
   "engines": {
