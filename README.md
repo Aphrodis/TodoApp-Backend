@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.com/Aphrodis/TodoApp-Backend.svg?branch=develop)](https://travis-ci.com/Aphrodis/TodoApp-Backend) [![Coverage Status](https://coveralls.io/repos/github/Aphrodis/TodoApp-Backend/badge.svg?branch=develop)](https://coveralls.io/github/Aphrodis/TodoApp-Backend?branch=develop) 
