@@ -4,8 +4,8 @@
   "description": "This is a todo application",
   "main": "app.js",
   "scripts": {
-    "build": "babel server -d dist",
     "create": "babel-node ./server/db/tables.js --exit",
+    "build": "babel server -d dist",
     "start": "nodemon --exec babel-node ./server/app.js",
     "devstart": "babel-node ./server/app.js",
     "test": "npm run create && nyc mocha --require @babel/register ./server/tests --exit",
