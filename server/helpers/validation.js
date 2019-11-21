@@ -17,7 +17,7 @@ const validateTodo = (task) => {
 };
 const validateSignup = (user) => {
     const signupSchema = Joi.object({
-        userId: Joi
+        userid: Joi
             .string(),
         firstname: Joi
             .string()
